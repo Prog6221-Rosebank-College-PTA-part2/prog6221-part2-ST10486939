@@ -123,6 +123,17 @@ namespace CyberBotWPF
             //Chatbot response
             string response = bot.GetResponse(userInput, userName);
 
+            if (userInput.ToLower().Contains("bye"))
+            {
+                BotMessage("Goodbye " + userName + "! Stay safe online.");
+
+                await Task.Delay(2000);
+
+                Application.Current.Shutdown();
+
+                return;
+            }
+
             BotMessage(response);
 
         }

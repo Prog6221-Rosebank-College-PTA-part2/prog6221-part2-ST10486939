@@ -5,61 +5,48 @@ namespace CyberBot
 {
     public class CSChatBot
     {
-        
+        //PHISHING TIPS LIST
+        private List<string> phishingTips = new List<string>
+        {
+            "Avoid clicking on suspicious email links.",
+            "Make sure to always verify the sender's email address.",
+            "Never download unexpected attachments.",
+            "Enable multi-factor authentication for extra security."
+        };
 
         //RANDOM OBJECT
         private Random random = new Random();
 
-        //CYBERBOT RESPONSES 
+        //CYBERBOT RESPONSES
         public string GetResponse(string userInput, string userName)
         {
             userInput = userInput.ToLower().Trim();
 
-            //CHATBOT GREETING
-            if(userInput.Contains("hello") || userInput.Contains("hi"))
+            //PASSWORDS
+            if (userInput.Contains("password"))
             {
-                return "Hello " + userName + "! How can I help you stay safe online?";
+                return userName + ", your password should never be guessable. A strong password should have at least 12 characters " +
+                    "and include uppercase and lowercase letters, numbers and special symbols.";
             }
-
-            //GENERIC QUESTIONS
-            else if(userInput.Contains("how are you"))
-            {
-                return "I am excited to teach you how to be safe online";
-            }
-
-            else if(userInput.Contains("what is your purpose"))
-            {
-                return "My purpose is to teach you about cybersecurity so you can stay safe whilst online.";
-            }
-
-            //PASSWORD SAFETY
-            else if (userInput.Contains("password"))
-            {
-                return userName + ", your password should never be easily guessable. A strong password has at least 12 characters " +
-                    "that includes upper and lowercase letters, numbers and special symbols.";
-            }
-
-
-            //PHISHING
-            else if(userInput.Contains("phishing"))
-            {
-                return "Phishing is a cyber attck that uses fraudulent emails, text messages, phone calls, or websites to trick people " +
-                    "into sharing sensitive information.";
-            }
-
             //SAFE BROWSING
-            else if(userInput.Contains("browsing"))
+            else if (userInput.Contains("browsing"))
             {
-                return "Safe browsing starts with awareness. " + userName + ", use a strong unique password for every account. Be cautious" +
-                    " with links and attchments. Pay attention to websites credibility.";
+                return "Safe browsing starts with awareness, " +userName+ ". Use a strong, unique password for every account. Be cautious " +
+                    "with links and attachments. Pay attention to a website's credibility.";
             }
-
-            //GOODBYE
-            else if (userInput.Contains("bye"))
+            //PHISHING TIPS
+            else if (userInput == "phishing tip")
             {
-                return "Goodbye " + userName + "! I hope you stay safe online.";
-            }
+                int index = random.Next(phishingTips.Count);
 
+                return userName + " here is a phishing tip: " + phishingTips[index];
+            }
+            //PHISHING
+            else if (userInput.Contains("phishing"))
+            {
+                return "Phishing is a cyber attack that uses fraudulent emails, text messages, phone calls or websites to trick people into " +
+                    "sharing sensitive information.";
+            }
             else
             {
                 return "I'm not sure about that. Try asking another question related to cybersecurity or type 'bye' to end our conversation.";
