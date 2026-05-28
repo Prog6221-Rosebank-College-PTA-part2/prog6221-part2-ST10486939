@@ -14,25 +14,84 @@ namespace CyberBot
             "Enable multi-factor authentication for extra security."
         };
 
+        //SENTIMENT LISTS
+        private List<string> worry = new List<string>
+        {
+            "worried",
+            "scared",
+            "afraid",
+            "nervous",
+            "anxious"
+        };
+        private List<string> curiosity = new List<string>
+        {
+            "curious",
+            "interested",
+            "wondering"
+        };
+
         //RANDOM OBJECT
         private Random random = new Random();
 
-        //MEMORY VARIABLES
+
+        //MEMORY 
         private string lastTopic = "";
         private int lastPhishingTipIndex = -1;
+
+
+        //SENTIMENT METHOD
+        private string SentimentDetection(string userInput)
+        {
+            foreach(string word in worry)
+            {
+                if(userInput.Contains(word))
+                {
+                    return "worried";
+                }
+            }
+
+            foreach(string word in curiosity)
+            {
+                if (userInput.Contains(word))
+                {
+                    return "curios";
+                }
+            }
+
+            return "neutral";
+        }
+
 
         //CYBERBOT RESPONSES
         public string GetResponse(string userInput, string userName)
         {
             userInput = userInput.ToLower().Trim();
 
+            //SENTIMENT DETECTION
+            string sentiment = SentimentDetection(userInput);
+
+            //GREETING
+            /*if(userInput.Contains("hello") || userInput.Contains("hi"))
+            {
+                return "Hello " + userName + "! How can I help you stay safe online?";
+            }*/
+
+
             //PASSWORDS
             if (userInput.Contains("password"))
             {
                 lastTopic = "password";
 
-                return userName + ", your password should never be guessable. A strong password should have at least 12 characters " +
-                    "and include uppercase and lowercase letters, numbers and special symbols.";
+                if(sentiment == "worried")
+                {
+                    return "Strong passwords are one of the best ways to protect your sensitive information.";
+                }
+                else if(sentiment == "curious")
+                {
+                    return userName + ", your password should never be guessable and should have at least 12 characters and include " +
+                        "uppercase and lowercase letters, numbers and special symbols.";
+                }
+                return userName + ", always remember to use a strong password to protect your sensitive information";
             }
             //SAFE BROWSING
             else if (userInput.Contains("browsing"))
@@ -57,8 +116,16 @@ namespace CyberBot
             {
                 lastTopic = "phishing";
 
-                return "Phishing is a cyber attack that uses fraudulent emails, text messages, phone calls or websites to trick people into " +
-                    "sharing sensitive information.";
+                if(sentiment == "worried")
+                {
+                    return "I understand your concern, " + userName + ". Phishing scams can be dangerous as it could lead to attackers " +
+                        "having your private information.";
+                } else if(sentiment == "curious")
+                {
+                    return "Great question, " + userName + "! Phishing is a cyber attck that uses fraudulent emails, text messages, phone " +
+                        "calls or websites to trick people into sharing sensitive information.";
+                }
+                return "Be careful, " + userName + ". Phishing scams trick users into revealing sensitivr information.";
             }
             //ADD INFORMATION
             else if(userInput.Contains("tell me more") || userInput.Contains("more information"))
