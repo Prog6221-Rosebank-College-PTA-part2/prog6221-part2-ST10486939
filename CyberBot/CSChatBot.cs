@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 
 namespace CyberBot
 {
@@ -10,6 +11,9 @@ namespace CyberBot
         public string GetResponse(string userInput, string userName)
         {
             return cyberbotResponses.GetResponse(userInput, userName);
+
+            
+            
         }
     }
 }

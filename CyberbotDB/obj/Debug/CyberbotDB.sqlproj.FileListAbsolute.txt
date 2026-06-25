@@ -1,0 +1,10 @@
+C:\Users\USER\source\repos\prog6221-part2-ST10486939\CyberbotDB\bin\Debug\CyberbotDB.dacpac
+C:\Users\USER\source\repos\prog6221-part2-ST10486939\CyberbotDB\bin\Debug\CyberbotDB.dll
+C:\Users\USER\source\repos\prog6221-part2-ST10486939\CyberbotDB\bin\Debug\CyberbotDB.pdb
+C:\Users\USER\source\repos\prog6221-part2-ST10486939\CyberbotDB\obj\Debug\CyberbotDB.sqlproj.AssemblyReference.cache
+C:\Users\USER\source\repos\prog6221-part2-ST10486939\CyberbotDB\obj\Debug\Model.xml
+C:\Users\USER\source\repos\prog6221-part2-ST10486939\CyberbotDB\obj\Debug\refactor.xml
+C:\Users\USER\source\repos\prog6221-part2-ST10486939\CyberbotDB\obj\Debug\postdeploy.sql
+C:\Users\USER\source\repos\prog6221-part2-ST10486939\CyberbotDB\obj\Debug\predeploy.sql
+C:\Users\USER\source\repos\prog6221-part2-ST10486939\CyberbotDB\obj\Debug\CyberbotDB.dll
+C:\Users\USER\source\repos\prog6221-part2-ST10486939\CyberbotDB\obj\Debug\CyberbotDB.pdb

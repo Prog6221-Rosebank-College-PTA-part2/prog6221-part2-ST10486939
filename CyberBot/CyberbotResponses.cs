@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace CyberBot
 {
     public class CyberbotResponses
     {
+
+        //TASKMANAGER
+        private TaskManager taskManager = new TaskManager();
+
         //PHISHING TIPS LIST
         private List<string> phishingTips = new List<string>
         {
@@ -60,6 +65,8 @@ namespace CyberBot
             return "neutral";
         }
 
+        
+
         //CYBERBOT RESPONSES
         public string GetResponse(string userInput, string userName)
         {
@@ -74,7 +81,13 @@ namespace CyberBot
                 return $"Hello " + userName + "! How can I help you stay safe online?";
             }*/
 
-
+            //Detect task requests
+            if (userInput.StartsWith("add task") ||
+                userInput.StartsWith("create task") ||
+                userInput.StartsWith("remind me to"))
+            {
+                return CreateNaturalTask(userInput);
+            }
             //PASSWORDS
             if (userInput.Contains("password"))
             {
@@ -157,6 +170,60 @@ namespace CyberBot
 
                 return "Here is another phishing tip: " + phishingTips[index];
             }
+            //Parse task input
+            else if(userInput.Contains("|"))
+            {
+                string[] parts = userInput.Split("|");
+
+                if(parts.Length >= 2)
+                {
+                    string title = parts[0].Trim();
+                    string description = parts[1].Trim();
+                    DateTime? reminder = null;
+
+                    if(parts.Length >= 3)
+                    {
+                        DateTime date;
+
+                        if (DateTime.TryParse(parts[2].Trim(), out date))
+                        {
+                            reminder = date;
+                        }
+                    }
+
+                    taskManager.AddTask(title, description, reminder);
+
+                    return "Task added successfully.";
+                }
+            }
+            //display tasks
+            else if(userInput == "show tasks")
+            {
+                var tasks = taskManager.GetTasks();
+
+                if(tasks.Count ==0)
+                {
+                    return "No cybersecurity tasks found.";
+                }
+
+                string response = "Cybersecurity Tasks: \n\n";
+
+                foreach(var task in tasks)
+                {
+                    response += $"{task.TaskId}. {task.Title}\n";
+
+                    response += $"Description: {task.Description}\n";
+
+                    response += $"Status: {task.Status}\n";
+
+                    if (task.ReminderDate != null)
+                    {
+                        response += $"Reminder: {task.ReminderDate:d}\n";
+                    }
+                    response += "\n";
+                }
+                return response;
+            }
             //DEFAULT RESPONSE
             else
             {
@@ -164,6 +231,41 @@ namespace CyberBot
             }
 
             return "Could you please specify which topic you want more information about?";
+        }
+
+        private string CreateNaturalTask(string userInput)
+        {
+            string title = userInput;
+
+            title = title.Replace("add task", "");
+            title = title.Replace("create task", "");
+            title = title.Replace("remind me to", "");
+
+            title = title.Trim();
+
+            DateTime? reminder = null;
+
+            if(title.Contains("tomorrow"))
+            {
+                reminder = DateTime.Today.AddDays(1);
+                title = title.Replace("tomorrow", "").Trim();
+            }
+            else if (title.Contains("next week"))
+            {
+                reminder = DateTime.Today.AddDays(7);
+                title = title.Replace("next week", "").Trim();
+            }
+            else if (title.Contains("next month"))
+            {
+                reminder = DateTime.Today.AddMonths(1);
+                title = title.Replace("next month", "").Trim();
+            }
+
+            taskManager.AddTask(title, $"Cybersecurity task: {title}", reminder);
+
+            return $"Task added successfully.\n\n" +
+                    $"Title: {title}\n" +
+                    $"Reminder: {(reminder.HasValue ? reminder.Value.ToShortDateString() : "None")}";
         }
     }
 }
