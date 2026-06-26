@@ -7,6 +7,75 @@ namespace CyberBot
 {
     public class CyberbotResponses
     {
+        //QUIZ VARIABLES
+        private bool quizActive = false;
+        private int currentQuestion = 0;
+        private int score = 0;
+
+        //questions
+        private List<string> quizQuestions = new List<string>
+        {
+            //1
+            "True or false: Sharing your password with friends is safe",
+            //2
+            "Which is a phishing attack?" +
+            "\nA) Fake email asking for you password" +
+            "\nB) Updating windows" +
+            "\nC) Using a VPN" +
+            "\nD) Creating a strong password",
+            //3
+            "True or False: Two-factor authentication imrpoves security.",
+            //4
+            "What does VPN stand for?" +
+            "\nA) Virtual Password Network" +
+            "\nB) Virtual Private Network" +
+            "\nC) Verified Public Network" +
+            "\nD) Virtual Protection Node",
+            //5
+            "True or False: Clicking unknown links can be dangerous.",
+            //6
+            "Which one of these is the best example of multi-factor authentication" +
+            "\nA) Username + a long password" +
+            "\nB) Password + a one-time code sent to your phone" +
+            "\nC) Security question + your date of birth" +
+            "\nD) PIN + fingerprint scan on the same device",
+            //7
+            "True or False: Using the same password for all your accounts is safe",
+            //8
+            "Under POPIA, what must a South African company do within 72 hours if personal info gets breached?" +
+            "\nA) Post about it on social media" +
+            "\nB) Notify the Information Regulator and affected data subjects" +
+            "\nC) Change all passwords in the company" +
+            "\nD) Wait until their annual audit to report it",
+            //9
+            "True or False: Multi-factor authentication adds an extra layer of security by requiring two or more forms of proof to login",
+            //10
+            "True or False: Under POPIA, organisations can share your personal info with any other company as long as it's for 'business purposes'"
+        };
+
+        private List<string> quizAnswers = new List<string>
+        {
+            //1
+            "false",
+            //2
+            "a",
+            //3
+            "true",
+            //4
+            "b",
+            //5
+            "true",
+            //6
+            "b",
+            //7
+            "false",
+            //8
+            "b",
+            //9
+            "true",
+            //10
+            "false"
+        };
 
         //TASKMANAGER
         private TaskManager taskManager = new TaskManager();
@@ -72,15 +141,49 @@ namespace CyberBot
         {
             userInput = userInput.ToLower().Trim();
 
+            //QUIZ ANSWERS
+            if (quizActive)
+            {
+                string response = "";
+
+                if (userInput == quizAnswers[currentQuestion])
+                {
+                    score++;
+                    response = "Correct!\n\n";
+                }
+                else
+                {
+                    response = $"Incorrect. The correct answer was: {quizAnswers[currentQuestion]}\n\n";
+                }
+
+                currentQuestion++;
+
+                if (currentQuestion >= quizQuestions.Count)
+                {
+                    quizActive = false;
+
+                    response += $"Quiz Complete!\n" +
+                                $"Final Score: {score}/{quizQuestions.Count}";
+
+                    return response;
+                }
+                return response + quizQuestions[currentQuestion];
+            }
+
+            //start quiz
+            if (userInput == "start quiz")
+            {
+                quizActive = true;
+                currentQuestion = 0;
+                score = 0;
+
+                return "Cybersecurity Quiz Started!\n\n" + quizQuestions[currentQuestion];
+            }
+
             //SENTIMENT DETECTION
             string sentiment = SentimentDetection(userInput);
 
-            //GREETING
-            /*if(userInput.Contains("hello") || userInput.Contains("hi"))
-            {
-                return $"Hello " + userName + "! How can I help you stay safe online?";
-            }*/
-
+           
             //Detect task requests
             if (userInput.StartsWith("add task") ||
                 userInput.StartsWith("create task") ||
@@ -88,6 +191,8 @@ namespace CyberBot
             {
                 return CreateNaturalTask(userInput);
             }
+
+
             //PASSWORDS
             if (userInput.Contains("password"))
             {
