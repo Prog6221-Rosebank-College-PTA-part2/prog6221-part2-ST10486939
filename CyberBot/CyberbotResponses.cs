@@ -7,6 +7,8 @@ namespace CyberBot
 {
     public class CyberbotResponses
     {
+        private ActivityManager activityManager = new ActivityManager();
+
         //QUIZ VARIABLES
         private bool quizActive = false;
         private int currentQuestion = 0;
@@ -177,25 +179,34 @@ namespace CyberBot
                 currentQuestion = 0;
                 score = 0;
 
+                activityManager.AddActivity("User asked about phishing.");
+
                 return "Cybersecurity Quiz Started!\n\n" + quizQuestions[currentQuestion];
+            }
+
+            if(userInput == "activity log" || userInput == "show activity log" || userInput == "show log" || userInput == "view activity")
+            {
+                return activityManager.GetActivityLog();
+            }
+
+            //detect task
+            if(userInput.StartsWith("add task") || userInput.StartsWith("create task") || userInput.StartsWith("remind me") ||
+                userInput.StartsWith("remember to") || userInput.StartsWith("i need to") || userInput.StartsWith("don't let me forget to"))
+            {
+                activityManager.AddActivity("User added task.");
+                return CreateNaturalTask(userInput);
             }
 
             //SENTIMENT DETECTION
             string sentiment = SentimentDetection(userInput);
 
-           
-            //Detect task requests
-            if (userInput.StartsWith("add task") ||
-                userInput.StartsWith("create task") ||
-                userInput.StartsWith("remind me to"))
-            {
-                return CreateNaturalTask(userInput);
-            }
 
 
             //PASSWORDS
             if (userInput.Contains("password"))
             {
+                activityManager.AddActivity("User asked about passwords.");
+
                 lastTopic = "password";
 
                 if (sentiment == "worried")
@@ -212,6 +223,8 @@ namespace CyberBot
             //SAFE BROWSING
             else if (userInput.Contains("browsing"))
             {
+                activityManager.AddActivity("User asked about safe browsing.");
+
                 lastTopic = "browsing";
 
                 return "Safe browsing starts with awareness, " + userName + ". Use a strong, unique password for every account. Be cautious " +
@@ -220,6 +233,8 @@ namespace CyberBot
             //PHISHING TIPS
             else if (userInput == "phishing tip")
             {
+                activityManager.AddActivity("User asked for phishing tips.");
+
                 int index = random.Next(phishingTips.Count);
 
                 lastPhishingTipIndex = index;
@@ -230,6 +245,8 @@ namespace CyberBot
             //PHISHING
             else if (userInput.Contains("phishing"))
             {
+                activityManager.AddActivity("User asked about phishing.");
+
                 lastTopic = "phishing";
 
                 if (sentiment == "worried")
@@ -247,6 +264,8 @@ namespace CyberBot
             //ADD INFORMATION
             else if (userInput.Contains("tell me more") || userInput.Contains("more information"))
             {
+                activityManager.AddActivity("User asked for more information.");
+
                 if (lastTopic == "password")
                 {
                     return "Try to use different passwords for different accounts in case any of your accounts are compromised, the other accounts" +
@@ -340,37 +359,73 @@ namespace CyberBot
 
         private string CreateNaturalTask(string userInput)
         {
-            string title = userInput;
-
-            title = title.Replace("add task", "");
-            title = title.Replace("create task", "");
-            title = title.Replace("remind me to", "");
-
-            title = title.Trim();
-
-            DateTime? reminder = null;
-
-            if(title.Contains("tomorrow"))
+            try
             {
-                reminder = DateTime.Today.AddDays(1);
-                title = title.Replace("tomorrow", "").Trim();
-            }
-            else if (title.Contains("next week"))
-            {
-                reminder = DateTime.Today.AddDays(7);
-                title = title.Replace("next week", "").Trim();
-            }
-            else if (title.Contains("next month"))
-            {
-                reminder = DateTime.Today.AddMonths(1);
-                title = title.Replace("next month", "").Trim();
-            }
+                //remove command prefixes
+                string taskText = userInput.ToLower().Trim();
 
-            taskManager.AddTask(title, $"Cybersecurity task: {title}", reminder);
+                string[] phrases =
+                {
+                    "add task -",
+                    "add task:",
+                    "add task",
+                    "create task -",
+                    "create task:",
+                    "create task",
+                    "remind me to",
+                    "remember to",
+                    "i need to",
+                    "don't let me forget to"
+                };
 
-            return $"Task added successfully.\n\n" +
-                    $"Title: {title}\n" +
-                    $"Reminder: {(reminder.HasValue ? reminder.Value.ToShortDateString() : "None")}";
-        }
+                foreach (string phrase in phrases)
+                {
+                    if (taskText.StartsWith(phrase))
+                    {
+                        taskText = taskText.Substring(phrase.Length).Trim();
+                        break;
+                    }
+                }
+
+                DateTime? reminder = null;
+
+                if(taskText.Contains("tomorrow"))
+                {
+                    reminder = DateTime.Today.AddDays(1);
+                    taskText = taskText.Replace("tomorrow", "").Trim();
+                } else if(taskText.Contains("today"))
+                {
+                    reminder = DateTime.Today;
+                    taskText = taskText.Replace("today", "").Trim();
+                } else if(taskText.Contains("next week"))
+                {
+                    reminder = DateTime.Today.AddDays(7);
+                    taskText = taskText.Replace("next week", "").Trim();
+                } else if(taskText.Contains("next month"))
+                {
+                    reminder = DateTime.Today.AddMonths(1);
+                    taskText = taskText.Replace("next month", "").Trim();
+                }
+
+                if(string.IsNullOrWhiteSpace(taskText))
+                {
+                    return "Please tell me what cybersecurity task you'd like me to remember.";
+                }
+
+                string title = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(taskText);
+                string description = $"Cybersecurity task: {title}";
+
+                taskManager.AddTask(title, description, reminder);
+
+                return $"I've added your cybersecurity task!\n\n" +
+                       $"Title: {title}\n" +
+                       $"Description: {description}\n" +
+                       $"Reminder: {(reminder.HasValue ? reminder.Value.ToShortDateString() : "No rmeinder set")}";
+            }
+            catch (Exception ex)
+            {
+                return "Sorry, I couldn't save your task.\n\nError: " + ex.Message;
+            }
     }
+}
 }
