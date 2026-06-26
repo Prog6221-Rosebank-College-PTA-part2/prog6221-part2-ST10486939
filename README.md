@@ -6,7 +6,7 @@ DESCRIPTION: This project is a C# chatbot app that is designed to inform users o
 
 FEATURES: The chatbot plays an audio greeting and display a ASCII logo as a header upon launch. The chatbot then initiates conversation with the user and prompts input from the user. The chatbot responds to input in a friendly manner that ensures that the conversation is flowing between the two parties. The chatbot has a memory feature to recall the last topic of conversation and is capable to divulge further information regarding a chosen topic if requested by the user. The user keep track of all activity the user does with the chatbot to display them in a log if requested by the user. The chatbot has a mini-game quiz that the user can play to test their cybersecurity knowledge.
 
-TECHNOLOGIES USED: C# WPF application Visual Studio 2022
+TECHNOLOGIES USED: C# WPF application Visual Studio 2022 and SQL
 
 HOW TO RUN THE PROJECT:
 1. Open the project in Visual Studio 2022
