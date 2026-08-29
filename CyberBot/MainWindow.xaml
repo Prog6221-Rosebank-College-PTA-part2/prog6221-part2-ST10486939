@@ -1,0 +1,127 @@
+﻿<Window x:Class="CyberBotWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="CyberBot"
+        Height="650"
+        Width="800"
+        WindowStartupLocation="CenterScreen"
+        Background="#E8CCD7">
+
+    <Window.Resources>
+        
+        <!-- SEND BUTTON STYLE -->
+        <Style x:Key="ChatbotButtonStyle" TargetType="Button">
+
+            <Setter Property="Background" Value="#6C6C6A"/>
+            <Setter Property="Foreground" Value="#FFFBF0"/>
+            <Setter Property="FontSize" Value="25"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="12">
+
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                            
+                        </Border>
+                        
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            
+        </Style>
+        
+    </Window.Resources>
+    
+    <!--MAIN GRID-->
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="90"/>
+        </Grid.RowDefinitions>
+        
+        <!--ASCII HEADER-->
+        <Border Grid.Row="0"
+                Background="#E8CCD7"
+                BorderBrush="#30363D"
+                BorderThickness="0,0,0,0">
+
+            <Grid>
+                <TextBox x:Name="LogoTextBox"
+                         Background="#E8CCD7"
+                         BorderThickness="0"
+                         Foreground="#3D1919"
+                         FontFamily="Consolas"
+                         FontSize="12"
+                         FontWeight="Bold"
+                         IsReadOnly="True"
+                         TextWrapping="NoWrap"
+                         AcceptsReturn="True"
+                         TextAlignment="Center"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"/>
+            </Grid>
+            
+        </Border>
+        
+        <!--CHAT AREA-->
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      x:Name="ChatScrollViewer">
+
+            <StackPanel x:Name="ChatPanel"
+                        Margin="15"/>
+
+        </ScrollViewer>
+        
+        <!--INPUT AREA-->
+        <Border Grid.Row="2"
+                Background="#E8CCD7"
+                BorderThickness="1,1,0,0">
+
+            <Grid Margin="15">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="130"/>
+                </Grid.ColumnDefinitions>
+                
+                <!--MESSAGE INPUT-->
+                <Border Background="#E8CCD7"
+                        CornerRadius="15"
+                        BorderBrush="#30363D"
+                        BorderThickness="1"
+                        Margin="0,0,15,0">
+
+                    <TextBox x:Name="MessageTextBox"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Foreground="DarkSlateGray"
+                             FontSize="15"
+                             Padding="15"
+                             CaretBrush="White"
+                             VerticalContentAlignment="Center"
+                             KeyDown="MessageTextBox_KeyDown"/>
+
+                </Border>
+                
+                <!--SEND BUTTON-->
+                <Button Grid.Column="1"
+                        Content="Send"
+                        Style="{StaticResource ChatbotButtonStyle}"
+                        Click="Button_Click"/>
+
+            </Grid>
+        </Border>
+        
+    </Grid>
+    
+</Window>
